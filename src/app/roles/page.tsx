@@ -2,11 +2,15 @@
 import React, { useState } from 'react';
 import { mockRoles, profileRoleMatrix, verificationPermissions } from '@/data';
 import { Role, ProfileType } from '@/types';
-import { Shield, Users, Building, Eye, Award, Settings, UserCheck, CheckCircle, XCircle } from 'lucide-react';
+import { Shield, Users, Building, Eye, Award, Settings, UserCheck, CheckCircle, XCircle, Edit } from 'lucide-react';
 import ProfileMatrix from '@/components/matrix/ProfileMatrix';
+import EditRolePermissions from '@/components/modals/EditRolePermissions';
 
 const RolesPage = () => {
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [roles, setRoles] = useState<Role[]>(mockRoles);
   const getProfileIcon = (profileType: ProfileType) => {
     switch (profileType) {
       case 'basic': return <Users size={16} />;
@@ -23,6 +27,19 @@ const RolesPage = () => {
       case 'company_member': return { backgroundColor: '#dcfce7', color: '#166534' };
       case 'investor': return { backgroundColor: '#e9d5ff', color: '#7c3aed' };
     }
+  };
+
+  const handleEditRole = (role: Role) => {
+    setSelectedRole(role);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveRole = (updatedRole: Role) => {
+    setRoles(prevRoles => 
+      prevRoles.map(role => 
+        role.id === updatedRole.id ? updatedRole : role
+      )
+    );
   };
 
   const PermissionBadge = ({ permission, enabled }: { permission: string, enabled: boolean }) => {
@@ -119,7 +136,7 @@ const RolesPage = () => {
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '16px'
       }}>
-        {mockRoles.map((role) => {
+        {roles.map((role) => {
           const cardStyle = {
             backgroundColor: 'white',
             border: '1px solid #e5e7eb',
@@ -446,10 +463,21 @@ const RolesPage = () => {
               }}>
                 Applicable Profiles
               </th>
+              <th style={{
+                padding: '12px 24px',
+                textAlign: 'center',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: '#6b7280',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody style={{ backgroundColor: 'white' }}>
-            {mockRoles.map((role: Role) => (
+            {roles.map((role: Role) => (
               <tr 
                 key={role.id} 
                 style={{
@@ -522,6 +550,33 @@ const RolesPage = () => {
                     })}
                   </div>
                 </td>
+                <td style={{ 
+                  padding: '16px 24px',
+                  textAlign: 'center'
+                }}>
+                  <button
+                    onClick={() => handleEditRole(role)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 12px',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
+                  >
+                    <Edit size={14} />
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -532,6 +587,14 @@ const RolesPage = () => {
       <ProfileMatrix
         isOpen={isMatrixOpen}
         onClose={() => setIsMatrixOpen(false)}
+      />
+
+      {/* Edit Role Permissions Modal */}
+      <EditRolePermissions
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        role={selectedRole}
+        onSave={handleSaveRole}
       />
     </div>
   );

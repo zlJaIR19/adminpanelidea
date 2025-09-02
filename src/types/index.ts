@@ -16,7 +16,7 @@ export type ProfessionalCategory = 'licensed_contractor' | 'industry_expert' | '
 
 export type VerificationStatus = 'pending' | 'verified' | 'rejected' | 'expired';
 
-export type UserRole = 'Owner' | 'Manager' | 'Member' | 'Viewer';
+export type UserRole = 'Owner' | 'Manager' | 'Member' | 'Viewer' | 'IT Admin';
 
 // Base User Profile (all users have this)
 export interface BaseUser {

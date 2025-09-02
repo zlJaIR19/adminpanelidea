@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, onToggle, userType = 'company_owner' }: SidebarProps)
       href: '/roles', 
       label: 'Roles & Permissions', 
       icon: Shield, 
-      allowedUserTypes: ['super_admin', 'company_owner'] 
+      allowedUserTypes: ['super_admin', 'company_owner', 'company_it_admin'] 
     },
     { 
       href: '/verification', 

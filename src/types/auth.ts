@@ -75,6 +75,7 @@ export const USER_TYPE_CONFIGS: Record<UserType, UserTypeConfig> = {
     emailDomain: null,
     permissions: [
       'user_management',
+      'role_management',
       'company_management',
       'project_management',
       'equipment_management',
