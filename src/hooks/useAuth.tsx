@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { AuthUser, AuthState, LoginCredentials, UserType, USER_TYPE_CONFIGS } from '@/types/auth';
 
 // Mock authentication service - replace with real API calls
@@ -79,7 +79,7 @@ const AuthContext = createContext<{
   hasPermission: (permission: string) => boolean;
 } | null>(null);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -88,6 +88,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const authService = AuthService.getInstance();
+
+  const logout = useCallback(async (): Promise<void> => {
+    await authService.logout();
+    setAuthState({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null
+    });
+  }, [authService]);
 
   useEffect(() => {
     // Check for existing session on mount
@@ -108,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return () => clearTimeout(timeoutId);
     }
-  }, []);
+  }, [logout]);
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
@@ -129,16 +139,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }));
       throw error;
     }
-  };
-
-  const logout = async (): Promise<void> => {
-    await authService.logout();
-    setAuthState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null
-    });
   };
 
   const hasPermission = (permission: string): boolean => {
