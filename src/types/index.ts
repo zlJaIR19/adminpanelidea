@@ -120,11 +120,12 @@ export interface Project {
 export interface Equipment {
   id: string;
   model: string;
-  condition: 'new' | 'used' | 'maintenance';
-  projectId: string;
-  assignedDate: string;
-  lifecycle: string;
-  status: 'active' | 'retired' | 'disposed';
+  brand: string;
+  type: string;
+  status: 'Limited' | 'OOS' | 'In Stock';
+  year: number;
+  price: number;
+  refrigerant: string;
 }
 
 export interface ComplianceLog {
