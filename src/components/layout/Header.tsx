@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Bell, UserCircle, Menu, Search, Settings, X, Eye, Edit } from 'lucide-react';
 import { UserType, USER_TYPE_CONFIGS } from '@/types/auth';
 import { Shield, Building, Users, BarChart3 } from 'lucide-react';
 import EditProfileModal from '@/components/modals/EditProfileModal';
+import GlobalSearch from '@/components/search/GlobalSearch';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -14,6 +16,21 @@ interface HeaderProps {
 const Header = ({ onToggleSidebar, isSidebarOpen, currentUserType = 'super_admin', onUserTypeChange }: HeaderProps) => {
   const [isUserTypeSwitcherOpen, setIsUserTypeSwitcherOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
+  const router = useRouter();
+
+  // Keyboard shortcut for global search (Cmd+K or Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsGlobalSearchOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
   
   const userTypeIcons = {
     super_admin: Shield,
@@ -209,14 +226,39 @@ const Header = ({ onToggleSidebar, isSidebarOpen, currentUserType = 'super_admin
             <Menu size={20} />
           </button>
           
-          <div style={searchContainerStyle}>
+          <button 
+            onClick={() => setIsGlobalSearchOpen(true)}
+            style={{
+              ...searchContainerStyle,
+              cursor: 'pointer',
+              border: 'none',
+              textAlign: 'left'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#f3f4f6';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#f9fafb';
+            }}
+          >
             <Search size={16} color="#9ca3af" />
-            <input 
-              type="text" 
-              placeholder="Search users, companies, projects..." 
-              style={searchInputStyle}
-            />
-          </div>
+            <span style={{
+              ...searchInputStyle,
+              color: '#9ca3af'
+            }}>
+              Search users, companies, projects...
+            </span>
+            <span style={{
+              fontSize: '12px',
+              color: '#9ca3af',
+              backgroundColor: '#e5e7eb',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              fontWeight: '500'
+            }}>
+              ⌘K
+            </span>
+          </button>
         </div>
         
         <div style={rightSideStyle}>
@@ -328,6 +370,16 @@ const Header = ({ onToggleSidebar, isSidebarOpen, currentUserType = 'super_admin
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}
         currentUserType={currentUserType}
+      />
+
+      {/* Global Search Modal */}
+      <GlobalSearch 
+        isOpen={isGlobalSearchOpen}
+        onClose={() => setIsGlobalSearchOpen(false)}
+        onNavigate={(path) => {
+          router.push(path);
+          setIsGlobalSearchOpen(false);
+        }}
       />
     </header>
   );
