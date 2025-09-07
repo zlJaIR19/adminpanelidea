@@ -136,13 +136,4 @@ export interface ComplianceLog {
   details: string;
 }
 
-export interface Subscription {
-  id: string;
-  companyId: string;
-  plan: 'Basic' | 'Pro' | 'Enterprise';
-  status: 'active' | 'canceled' | 'past_due';
-  renewalDate: string;
-  usersLimit: number;
-  projectsLimit: number;
-  storageLimitGB: number;
-}
+// Subscription interface moved to @/types/subscriptions.ts for comprehensive subscription management
