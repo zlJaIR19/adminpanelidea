@@ -1,9 +1,29 @@
 "use client";
-import React from 'react';
-import { mockProjects, mockUsers } from '@/data';
+"use client";
+import React, { useState } from 'react';
+import { mockProjects, mockUsers, mockTasks } from '@/data';
 import { Project } from '@/types';
+import TaskManagement from '@/components/tasks/TaskManagement';
+import { CheckSquare, Users, Calendar, BarChart3, Plus, Eye } from 'lucide-react';
 
 const ProjectsPage = () => {
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'overview' | 'tasks'>('overview');
+  
+  // Calculate project statistics
+  const getProjectStats = (projectId: string) => {
+    const projectTasks = mockTasks.filter(task => task.projectId === projectId);
+    return {
+      totalTasks: projectTasks.length,
+      completedTasks: projectTasks.filter(task => task.status === 'completed').length,
+      inProgressTasks: projectTasks.filter(task => task.status === 'in_progress').length,
+      overdueTasks: projectTasks.filter(task => {
+        if (task.status === 'completed' || task.status === 'cancelled') return false;
+        return new Date(task.dueDate) < new Date();
+      }).length
+    };
+  };
+
   const containerStyle = {
     padding: '0'
   };

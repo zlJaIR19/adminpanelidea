@@ -1,14 +1,14 @@
 "use client";
 import React from 'react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import VerificationManagement from '@/components/verification/VerificationManagement';
+import SubscriptionManagement from '@/components/subscriptions/SubscriptionManagement';
 
-const VerificationPage = () => {
+const SubscriptionsPage = () => {
   return (
     <ProtectedRoute requiredUserTypes={['super_admin', 'company_owner']}>
-      <VerificationManagement />
+      <SubscriptionManagement />
     </ProtectedRoute>
   );
 };
 
-export default VerificationPage;
+export default SubscriptionsPage;

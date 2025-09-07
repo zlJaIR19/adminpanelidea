@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header, Sidebar } from '@/components/layout';
 import { UserType } from '@/types/auth';
+import { AuthProvider } from '@/hooks/useAuth';
 
 interface LayoutWrapperProps {
   children: React.ReactNode;
@@ -59,24 +60,26 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   };
 
   return (
-    <div style={layoutStyle}>
-      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} userType={currentUserType} />
-      <div style={mainContainerStyle}>
-        <Header 
-          onToggleSidebar={toggleSidebar} 
-          isSidebarOpen={isSidebarOpen} 
-          currentUserType={currentUserType}
-          onUserTypeChange={(userType) => {
-            // This will trigger a reload in the component
-          }}
-        />
-        <main style={mainContentStyle}>
-          <div style={contentWrapperStyle}>
-            {children}
-          </div>
-        </main>
+    <AuthProvider>
+      <div style={layoutStyle}>
+        <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} userType={currentUserType} />
+        <div style={mainContainerStyle}>
+          <Header 
+            onToggleSidebar={toggleSidebar} 
+            isSidebarOpen={isSidebarOpen} 
+            currentUserType={currentUserType}
+            onUserTypeChange={(userType) => {
+              // This will trigger a reload in the component
+            }}
+          />
+          <main style={mainContentStyle}>
+            <div style={contentWrapperStyle}>
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 };
 

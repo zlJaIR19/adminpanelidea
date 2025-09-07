@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Briefcase, Users, Building, Settings, FileText, DollarSign, Shield, HardHat, Award, Eye } from 'lucide-react';
+import { Home, Briefcase, Users, Building, Settings, FileText, DollarSign, Shield, HardHat, Award, Eye, CheckSquare } from 'lucide-react';
 import { UserType } from '@/types/auth';
 
 interface SidebarProps {
@@ -63,6 +63,12 @@ const Sidebar = ({ isOpen, onToggle, userType = 'company_owner' }: SidebarProps)
       isReadOnly: userType === 'company_manager'
     },
     { 
+      href: '/tasks', 
+      label: 'Task Management', 
+      icon: CheckSquare, 
+      allowedUserTypes: ['super_admin', 'company_owner', 'company_it_admin', 'company_manager']
+    },
+    { 
       href: '/equipment', 
       label: 'Equipment', 
       icon: HardHat, 
@@ -77,10 +83,10 @@ const Sidebar = ({ isOpen, onToggle, userType = 'company_owner' }: SidebarProps)
       isReadOnly: userType === 'company_manager' || userType === 'company_it_admin'
     },
     { 
-      href: '/billing', 
-      label: 'Billing & Subscriptions', 
+      href: '/subscriptions', 
+      label: 'Subscriptions', 
       icon: DollarSign, 
-      allowedUserTypes: ['super_admin'] 
+      allowedUserTypes: ['super_admin', 'company_owner'] 
     },
     { 
       href: '/investor', 
